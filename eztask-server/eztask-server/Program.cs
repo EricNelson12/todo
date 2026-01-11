@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using EztaskServer.Todos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(opt =>
     opt.UseSqlite(builder.Configuration.GetConnectionString("Default")));
+// Move the service registration above the app.Build() call
+// Ensure the namespace is imported if it exists
+
+
+builder.Services.AddScoped<ITodoTaskService, TodoTaskService>();
 
 var app = builder.Build();
 
