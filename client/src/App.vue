@@ -7,7 +7,6 @@ import Todo from "./components/Todo.vue";
 
 
   <main class="container mt-4">
-    <TheWelcome />
     <Todo />
   </main>
 </template>

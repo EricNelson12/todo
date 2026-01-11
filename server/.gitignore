@@ -106,3 +106,4 @@ $RECYCLE.BIN/
 
 # For database files
 *.db-*
+*.db

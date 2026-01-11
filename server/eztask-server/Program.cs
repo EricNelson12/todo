@@ -18,7 +18,21 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 
 builder.Services.AddScoped<ITodoTaskService, TodoTaskService>();
 
+// Add CORS services
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost5173", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
+
+// Enable CORS middleware
+app.UseCors("AllowLocalhost5173");
 
 // HTTP pipeline
 if (app.Environment.IsDevelopment())

@@ -16,10 +16,12 @@
   },
   "dependencies": {
     "bootstrap": "^5.3.8",
+    "openapi-fetch": "^0.15.0",
     "vue": "^3.5.26"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
+    "@openapitools/openapi-generator-cli": "^2.27.0",
     "@vitejs/plugin-vue": "^6.0.3",
     "@vitest/eslint-plugin": "^1.6.5",
     "@vue/eslint-config-prettier": "^10.2.0",
@@ -28,6 +30,7 @@
     "eslint-plugin-vue": "~10.6.2",
     "globals": "^17.0.0",
     "jsdom": "^27.4.0",
+    "openapi-typescript": "^7.10.1",
     "prettier": "3.7.4",
     "vite": "^7.3.0",
     "vite-plugin-vue-devtools": "^8.0.5",

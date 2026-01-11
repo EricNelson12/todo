@@ -13,15 +13,15 @@ public sealed class TodoTaskService : ITodoTaskService
 
     public async Task<TodoTaskDto> CreateAsync(CreateTodoTaskRequest request, CancellationToken ct = default)
     {
-        var title = (request.Title ?? "").Trim();
-        if (title.Length == 0) throw new ArgumentException("Title is required.", nameof(request.Title));
-        if (title.Length > 200) throw new ArgumentException("Title is too long (max 200).", nameof(request.Title));
+        var text = (request.Text ?? "").Trim();
+        if (text.Length == 0) throw new ArgumentException("Text is required.", nameof(request.Text));
+        if (text.Length > 200) throw new ArgumentException("Text is too long (max 200).", nameof(request.Text));
 
         var now = DateTimeOffset.UtcNow;
 
         var entity = new TodoTask
         {
-            Title = title,
+            Title = text,
 
             IsCompleted = false,
             CreatedAtUtc = now.UtcDateTime,
@@ -67,12 +67,7 @@ public sealed class TodoTaskService : ITodoTaskService
         var entity = await _db.TodoTasks.FirstOrDefaultAsync(x => x.Id == id, ct);
         if (entity is null) return null;
 
-        var title = (request.Title ?? "").Trim();
-        if (title.Length == 0) throw new ArgumentException("Title is required.", nameof(request.Title));
-        if (title.Length > 200) throw new ArgumentException("Title is too long (max 200).", nameof(request.Title));
-
-        entity.Title = title;
-
+        entity.IsCompleted = request.Done; // Changed to only mutate IsCompleted from Done
 
         await _db.SaveChangesAsync(ct);
         return Map(entity);
@@ -105,8 +100,8 @@ public sealed class TodoTaskService : ITodoTaskService
     private static TodoTaskDto Map(TodoTask x) =>
         new(
             x.Id,
-            x.Title,
-            x.IsCompleted,
+            x.Title, // Changed to map Title -> Text
+            x.IsCompleted, // Changed to map IsCompleted -> Done
             x.CreatedAtUtc
         );
 }

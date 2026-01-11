@@ -1,20 +1,18 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace EztaskServer.Todos;
 
 public sealed record TodoTaskDto(
     int Id,
-    string Title,
-    bool IsCompleted,
-    DateTime CreatedAtUtc
+    string Text,
+    bool Done,
+    DateTime CreatedAtUtc // Added CreatedAtUtc to match constructor usage
 );
 
 public sealed record CreateTodoTaskRequest(
-    string Title,
-    string? Notes,
-    DateTimeOffset? DueAt
+    [Required] string Text
 );
 
 public sealed record UpdateTodoTaskRequest(
-    string Title,
-    string? Notes,
-    DateTimeOffset? DueAt
+    bool Done
 );
