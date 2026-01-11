@@ -1,0 +1,48 @@
+/* Base styles for the application */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    font-weight: bold;
+}
+
+p {
+    margin: 0;
+    line-height: 1.6;
+}
+
+a {
+    color: #007BFF;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+ul, ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+* {
+    box-sizing: border-box;
+}
