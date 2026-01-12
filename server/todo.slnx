@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/eztask-server.csproj" />
+  <Project Path="tests/eztask-server.Tests.csproj" />
+</Solution>

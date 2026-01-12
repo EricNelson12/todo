@@ -1,4 +1,0 @@
-<Solution>
-  <Project Path="eztask-server/eztask-server.csproj" />
-  <Project Path="eztask-server.Tests/eztask-server.Tests.csproj" />
-</Solution>

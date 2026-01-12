@@ -10,7 +10,7 @@
 ## Run server
 
 ```bash
-cd server/eztask-server
+cd server/src
 dotnet restore
 dotnet run
 ```

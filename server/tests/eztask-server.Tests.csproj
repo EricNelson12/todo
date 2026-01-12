@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\eztask-server\eztask-server.csproj" />
+    <ProjectReference Include="..\src\eztask-server.csproj" />
   </ItemGroup>
 
 </Project>
