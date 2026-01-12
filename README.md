@@ -39,6 +39,7 @@ flowchart LR
 - Have the service return and accept DTOs from the controller to keep things more modular / less dependant.
 - Create `TodoHelper` with CRUD methods (`add`, `delete`, `toggleDone`) to make the Vue presentation layer easier to read.
 - To make things snappy, use an "Optimistic add" where todo list items are added before the server actually creates them, and only removed if there is no 200)
+- Use bootstrap 5 for styling
 
 ## Out of scope for now
 - More comprehensive tests :)
