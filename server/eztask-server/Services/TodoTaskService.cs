@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-
 namespace EztaskServer.Todos;
 
 public sealed class TodoTaskService : ITodoTaskService
@@ -14,8 +12,9 @@ public sealed class TodoTaskService : ITodoTaskService
     public async Task<TodoTaskDto> CreateAsync(CreateTodoTaskRequest request, CancellationToken ct = default)
     {
         var text = (request.Text ?? "").Trim();
-        if (text.Length == 0) throw new ArgumentException("Text is required.", nameof(request.Text));
-        if (text.Length > 200) throw new ArgumentException("Text is too long (max 200).", nameof(request.Text));
+        if (text.Length == 0) return;
+        if (text.Length > 200)
+            text = text.Substring(0, 200);
 
         var now = DateTimeOffset.UtcNow;
 
@@ -100,8 +99,8 @@ public sealed class TodoTaskService : ITodoTaskService
     private static TodoTaskDto Map(TodoTask x) =>
         new(
             x.Id,
-            x.Title, // Changed to map Title -> Text
-            x.IsCompleted, // Changed to map IsCompleted -> Done
+            x.Title,
+            x.IsCompleted,
             x.CreatedAtUtc
         );
 }

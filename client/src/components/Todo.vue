@@ -90,20 +90,22 @@ onMounted(loadTodos);
 </script>
 
 <template>
-  <form @submit.prevent="addTodo">
-    <input v-model="newTodo" required placeholder="new todo" :disabled="loading">
-    <button :disabled="loading">Add Todo</button>
+  <form @submit.prevent="addTodo" class="d-flex gap-2 mb-3">
+    <input v-model="newTodo" required maxlength="500" placeholder="New todo" :disabled="loading" class="form-control">
+    <button :disabled="loading" class="btn btn-primary">Add</button>
   </form>
-  <p v-if="loading">Loading…</p>
-  <p v-if="error" class="error">{{ error }}</p>
-  <ul>
-    <li v-for="todo in visibleTodos" :key="todo.id">
-      <input type="checkbox" :checked="todo.done" @change="toggleDone(todo)" />
-      <span :class="{ done: todo.done }">{{ todo.text }}</span>
-      <button @click="removeTodo(todo)">X</button>
+  <div v-if="loading" class="text-muted mb-2">Loading…</div>
+  <div v-if="error" class="alert alert-danger py-2">{{ error }}</div>
+  <ul class="list-group mb-3">
+    <li class="list-group-item d-flex align-items-center gap-2" v-for="todo in visibleTodos" :key="todo.id">
+      <input class="form-check-input m-0" type="checkbox" :id="`todo-${todo.id}`" :checked="todo.done" @change="toggleDone(todo)" />
+      <label class="form-check-label flex-grow-1" :for="`todo-${todo.id}`" :class="{ done: todo.done }">
+        {{ todo.text }}
+      </label>
+      <button type="button" class="btn btn-sm btn-outline-danger" @click="removeTodo(todo)">✕</button>
     </li>
   </ul>
-  <button @click="hideCompleted = !hideCompleted">
+  <button type="button" class="btn btn-secondary" @click="hideCompleted = !hideCompleted">
     {{ hideCompleted ? 'Show all' : 'Hide completed' }}
   </button>
 </template>
@@ -112,7 +114,10 @@ onMounted(loadTodos);
 .done {
   text-decoration: line-through;
 }
-.error {
-  color: #b00020;
+
+.form-check-label {
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 </style>
