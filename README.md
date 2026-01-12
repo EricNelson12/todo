@@ -1,33 +1,33 @@
 
-# Todo App
+# Eric's Todo App 😊
 
-## Prereqs
+## Setup
+
+### 1. Check Prerequisites
 - .NET SDK 10
+- dotnet-ef ( `dotnet tool install --global dotnet-ef`)
 - Node 18+
 
----
-
-## Run server
+### 2. Run backend (dot net api)
 
 ```bash
 cd server/eztask-server
+dotnet ef database update
 dotnet restore
 dotnet run
 ```
 
 - Swagger UI: http://localhost:5114/swagger  
-- OpenAPI JSON: http://localhost:5114/swagger/v1/swagger.json  
 
----
 
-## Run client
+### 3. Run frontend (vue via vite)
 
 ```bash
 cd client
 npm install
 ```
 
-Create `client/.env`:
+~Create `client/.env`:~ (i left `.env` in the repo to make one less step for this demo)
 
 ```env
 API_BASE_URL=http://localhost:5114
@@ -38,10 +38,14 @@ Start dev server:
 ```bash
 npm run dev
 ```
+### 4. Open app
 
----
+http://localhost:5173/
 
-## Generate typed API from Swagger
+
+## Useful development commands
+
+### Generate the client side sdk from openApi docs
 
 ```bash
 cd client
