@@ -1,48 +1,41 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace EztaskServer.Todos;
 
-public sealed class TodoTaskService : ITodoTaskService
+public sealed class TodoTaskService(AppDbContext db) : ITodoTaskService
 {
-    private readonly AppDbContext _db;
+    private const int MaxTitleLength = 500;
 
-    public TodoTaskService(AppDbContext db)
-    {
-        _db = db;
-    }
-
-    public async Task<TodoTaskDto> CreateAsync(CreateTodoTaskRequest request, CancellationToken ct = default)
+    public async Task<TodoTaskDto?> Create(CreateTodoTaskRequest request, CancellationToken ct = default)
     {
         var text = (request.Text ?? "").Trim();
-        if (text.Length == 0) return;
-        if (text.Length > 200)
-            text = text.Substring(0, 200);
-
-        var now = DateTimeOffset.UtcNow;
+        if (text.Length == 0) return null;
+        text = text[..Math.Min(text.Length, MaxTitleLength)];
 
         var entity = new TodoTask
         {
             Title = text,
-
             IsCompleted = false,
-            CreatedAtUtc = now.UtcDateTime,
+            CreatedAtUtc = DateTime.UtcNow,
         };
 
-        _db.TodoTasks.Add(entity);
-        await _db.SaveChangesAsync(ct);
+        db.TodoTasks.Add(entity);
+        await db.SaveChangesAsync(ct);
 
         return Map(entity);
     }
 
-    public async Task<TodoTaskDto?> GetAsync(int id, CancellationToken ct = default)
+    public async Task<TodoTaskDto?> Get(int id, CancellationToken ct = default)
     {
-        var entity = await _db.TodoTasks.AsNoTracking()
+        var entity = await db.TodoTasks.AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id, ct);
 
         return entity is null ? null : Map(entity);
     }
 
-    public async Task<IReadOnlyList<TodoTaskDto>> ListAsync(bool? isCompleted = null, CancellationToken ct = default)
+    public async Task<IReadOnlyList<TodoTaskDto>> List(bool? isCompleted = null, CancellationToken ct = default)
     {
-        var q = _db.TodoTasks.AsNoTracking().AsQueryable();
+        var q = db.TodoTasks.AsNoTracking();
 
         if (isCompleted is not null)
             q = q.Where(x => x.IsCompleted == isCompleted.Value);
@@ -61,38 +54,38 @@ public sealed class TodoTaskService : ITodoTaskService
         return items;
     }
 
-    public async Task<TodoTaskDto?> UpdateAsync(int id, UpdateTodoTaskRequest request, CancellationToken ct = default)
+    public async Task<TodoTaskDto?> Update(int id, UpdateTodoTaskRequest request, CancellationToken ct = default)
     {
-        var entity = await _db.TodoTasks.FirstOrDefaultAsync(x => x.Id == id, ct);
+        var entity = await db.TodoTasks.FirstOrDefaultAsync(x => x.Id == id, ct);
         if (entity is null) return null;
 
-        entity.IsCompleted = request.Done; // Changed to only mutate IsCompleted from Done
+        entity.IsCompleted = request.Done;
 
-        await _db.SaveChangesAsync(ct);
+        await db.SaveChangesAsync(ct);
         return Map(entity);
     }
 
-    public async Task<TodoTaskDto?> CompleteAsync(int id, CancellationToken ct = default)
+    public async Task<TodoTaskDto?> Complete(int id, CancellationToken ct = default)
     {
-        var entity = await _db.TodoTasks.FirstOrDefaultAsync(x => x.Id == id, ct);
+        var entity = await db.TodoTasks.FirstOrDefaultAsync(x => x.Id == id, ct);
         if (entity is null) return null;
 
         if (!entity.IsCompleted)
         {
             entity.IsCompleted = true;
-            await _db.SaveChangesAsync(ct);
+            await db.SaveChangesAsync(ct);
         }
 
         return Map(entity);
     }
 
-    public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
+    public async Task<bool> Delete(int id, CancellationToken ct = default)
     {
-        var entity = await _db.TodoTasks.FirstOrDefaultAsync(x => x.Id == id, ct);
+        var entity = await db.TodoTasks.FirstOrDefaultAsync(x => x.Id == id, ct);
         if (entity is null) return false;
 
-        _db.TodoTasks.Remove(entity);
-        await _db.SaveChangesAsync(ct);
+        db.TodoTasks.Remove(entity);
+        await db.SaveChangesAsync(ct);
         return true;
     }
 
