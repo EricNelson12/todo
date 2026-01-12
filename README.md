@@ -1,6 +1,12 @@
 
 # Eric's Todo App 😊
 
+
+
+https://github.com/user-attachments/assets/098b6ae0-d4ad-4091-96b3-ce08622908f5
+
+
+
 ## Technical Design
 
 
