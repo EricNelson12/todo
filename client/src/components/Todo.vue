@@ -1,78 +1,17 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { api } from '../api/client';
+import { TodoHelper } from '../helpers/todoHelper';
 
-// --- State ---
+const { todos, loading, error, load, add, remove, toggleDone } = TodoHelper();
+
 const newTodo = ref('');
 const hideCompleted = ref(false);
-const todos = ref([]);
-const loading = ref(false);
-const error = ref('');
 
-// --- API client ---
-async function loadTodos() {
-  loading.value = true;
-  error.value = '';
-  try {
-    const { data } = await api.GET('/api/todos');
-    todos.value = data ?? [];
-  } catch (e) {
-    error.value = e?.message ?? 'Failed to load todos';
-    todos.value = [];
-  } finally {
-    loading.value = false;
-  }
-}
-
-// --- UI actions ---
-async function addTodo() {
+async function handleSubmit() {
   const text = newTodo.value.trim();
   if (!text) return;
-
-  error.value = '';
-
-  const optimistic = { id: `tmp-${Date.now()}`, text, done: false, _optimistic: true };
-  todos.value.unshift(optimistic);
   newTodo.value = '';
-
-  try {
-    const { data } = await api.POST('/api/todos', { body: { text } });
-    if (data) {
-      const idx = todos.value.findIndex((t) => t.id === optimistic.id);
-      if (idx !== -1) todos.value[idx] = data;
-    } else {
-      await loadTodos();
-    }
-  } catch (e) {
-    todos.value = todos.value.filter((t) => t.id !== optimistic.id);
-    error.value = e?.message ?? 'Failed to create todo';
-  }
-}
-
-async function removeTodo(todo) {
-  error.value = '';
-
-  const prev = todos.value;
-  todos.value = todos.value.filter((t) => t.id !== todo.id);
-
-  try {
-    await api.DELETE(`/api/todos/${todo.id}`);
-  } catch (e) {
-    todos.value = prev;
-    error.value = e?.message ?? 'Failed to delete todo';
-  }
-}
-
-async function toggleDone(todo) {
-  const prevDone = todo.done;
-  todo.done = !todo.done;
-
-  try {
-    await api.PUT(`/api/todos/${todo.id}`, { body: { done: todo.done } });
-  } catch (e) {
-    todo.done = prevDone; // Revert on failure
-    error.value = e?.message ?? 'Failed to update todo';
-  }
+  await add(text);
 }
 
 const visibleTodos = computed(() => {
@@ -86,11 +25,11 @@ const visibleTodos = computed(() => {
   return hideCompleted.value ? sortedTodos.filter((t) => !t.done) : sortedTodos;
 });
 
-onMounted(loadTodos);
+onMounted(load);
 </script>
 
 <template>
-  <form @submit.prevent="addTodo" class="d-flex gap-2 mb-3">
+  <form @submit.prevent="handleSubmit" class="d-flex gap-2 mb-3">
     <input v-model="newTodo" required maxlength="500" placeholder="New todo" :disabled="loading" class="form-control">
     <button :disabled="loading" class="btn btn-primary">Add</button>
   </form>
@@ -102,7 +41,7 @@ onMounted(loadTodos);
       <label class="form-check-label flex-grow-1" :for="`todo-${todo.id}`" :class="{ done: todo.done }">
         {{ todo.text }}
       </label>
-      <button type="button" class="btn btn-sm btn-outline-danger" @click="removeTodo(todo)">✕</button>
+      <button type="button" class="btn btn-sm btn-outline-danger" @click="remove(todo)">✕</button>
     </li>
   </ul>
   <button type="button" class="btn btn-secondary" @click="hideCompleted = !hideCompleted">
