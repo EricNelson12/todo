@@ -20,6 +20,7 @@ export function TodoHelper() {
     }
   }
 
+  // Optimistic add: immediately show the new todo, then replace with server response
   async function add(text) {
     if (!text) return;
 
@@ -42,6 +43,7 @@ export function TodoHelper() {
     }
   }
 
+  // Optimistic remove: hide immediately, restore on failure
   async function remove(todo) {
     error.value = '';
 
@@ -56,6 +58,7 @@ export function TodoHelper() {
     }
   }
 
+  // Optimistic toggle: flip state immediately, revert on failure
   async function toggleDone(todo) {
     const prevDone = todo.done;
     todo.done = !todo.done;

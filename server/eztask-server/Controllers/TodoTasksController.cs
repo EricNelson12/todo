@@ -33,7 +33,9 @@ public sealed class TodoTasksController : ControllerBase
         CancellationToken ct)
     {
         var dto = await _service.Create(request, ct);
-        return CreatedAtAction(nameof(Get), new { id = dto.Id }, dto);
+        return dto is null
+            ? StatusCode(500, "Failed to create todo")
+            : CreatedAtAction(nameof(Get), new { id = dto.Id }, dto);
     }
 
     [HttpPut("{id:int}")]
